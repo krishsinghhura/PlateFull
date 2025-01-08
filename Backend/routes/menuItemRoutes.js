@@ -7,4 +7,6 @@ const {
 
 router.post("/menu-items", createMenuItem);
 
+router.get("/restaurant-profile/:id/menu-items", getRestaurantMenuItems);
+
 module.exports = router;

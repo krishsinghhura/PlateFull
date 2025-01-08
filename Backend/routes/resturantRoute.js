@@ -7,4 +7,6 @@ const {
 
 router.post("/restaurant-profile", createRestaurant);
 
+router.get("/users/:id", getUserDetails);
+
 module.exports = router;
