@@ -1,5 +1,7 @@
 const User = require("../models/userModel");
 const MenuItem = require("../models/MenuItem");
+const multer = require("multer");
+const uploadImageToSupabase = require("../utils/uploadImageToSupabase");
 
 // POST /api/menu-items
 const createMenuItem = async (req, res) => {
@@ -14,12 +16,19 @@ const createMenuItem = async (req, res) => {
         .status(400)
         .json({ message: "No restaurant found for this user" });
 
+    let imageUrl = null;
+    if (req.file) {
+      imageUrl = await uploadImageToSupabase(
+        req.file.buffer,
+        req.file.originalname
+      );
+    }
     const menuItem = new MenuItem({
       title,
       description,
       price,
       category,
-      image,
+      image: imageUrl,
       restaurant: restaurant._id,
       owner: userId,
     });
