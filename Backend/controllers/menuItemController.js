@@ -1,6 +1,6 @@
 const User = require("../models/userModel");
 const MenuItem = require("../models/MenuItem");
-const multer = require("multer");
+const mongoose = require("mongoose");
 const uploadImageToSupabase = require("../utils/uploadImageToSupabase");
 
 // POST /api/menu-items
@@ -17,6 +17,7 @@ const createMenuItem = async (req, res) => {
         .json({ message: "No restaurant found for this user" });
 
     let imageUrl = null;
+    console.log("req.file:", req.file); // Log the uploaded file
     if (req.file) {
       imageUrl = await uploadImageToSupabase(
         req.file.buffer,
@@ -54,7 +55,53 @@ const getRestaurantMenuItems = async (req, res) => {
   }
 };
 
+// PUT /api/v2/menu-items/:id
+const editMenu = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { title, description, price, category, image } = req.body;
+
+    // Validate ObjectId
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return res.status(400).json({ error: "Invalid Menu Item ID" });
+    }
+
+    // Find and update the menu item
+    const updatedMenuItem = await MenuItem.findByIdAndUpdate(
+      id,
+      { title, description, price, category, image },
+      { new: true } // Return the updated document
+    );
+
+    if (!updatedMenuItem) {
+      return res.status(404).json({ message: "Menu Item not found" });
+    }
+
+    res.status(200).json(updatedMenuItem);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+};
+
+// DELETE /api/v2/menu-items/:id
+const deletMenu = async (req, res) => {
+  try {
+    const menuItem = await MenuItem.findByIdAndDelete(req.params.id);
+
+    if (!menuItem) {
+      return res.status(404).json({ message: "Menu item not found" });
+    }
+
+    res.status(200).json({ message: "Menu item deleted successfully" });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+};
+
 module.exports = {
   createMenuItem,
   getRestaurantMenuItems,
+  editMenu,
+  deletMenu,
 };
