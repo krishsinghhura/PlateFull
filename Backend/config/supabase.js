@@ -1,8 +1,9 @@
 const { createClient } = require("@supabase/supabase-js");
 
+require("dotenv").config(); // Add this line at the top of the file
+
 const SUPABASE_URL = "https://snuuphlknlydusnrkjjz.supabase.co";
-const SUPABASE_KEY =
-  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNudXVwaGxrbmx5ZHVzbnJramp6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzYwODA5NzYsImV4cCI6MjA1MTY1Njk3Nn0.6UAYN4dAxLgyY1QR2eqBStN8fThfufjDEx83PIBhNV0";
+const SUPABASE_KEY = process.env.SUPABASE_KEY;
 
 if (!SUPABASE_KEY) {
   throw new Error("SUPABASE_KEY is missing in the environment variables.");
