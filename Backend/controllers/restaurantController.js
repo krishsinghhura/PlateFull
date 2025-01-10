@@ -5,15 +5,15 @@ const mongoose = require("mongoose");
 // POST /api/restaurant-profile
 const createRestaurant = async (req, res) => {
   try {
-    const { userId, name, address, contact } = req.body;
-    const user = await User.findById(userId);
+    const { userid, name, address, contact } = req.body;
+    const user = await User.findById(userid);
     if (!user) return res.status(404).json({ message: "User not found" });
 
     const restaurant = new RestaurantProfile({
       name,
       address,
       contact,
-      owner: userId,
+      owner: userid,
     });
 
     await restaurant.save();

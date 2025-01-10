@@ -10,7 +10,7 @@ const authorize = require("../middleware/middleware");
 
 router.post("/restaurant-profile", authorize, createRestaurant);
 
-router.get("/users/:id", authorize, getUserDetails);
+router.get("/users/:id", getUserDetails);
 
 router.put("/restaurants/:id", authorize, editRestaurant);
 

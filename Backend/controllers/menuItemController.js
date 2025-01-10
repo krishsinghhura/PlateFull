@@ -6,8 +6,8 @@ const uploadImageToSupabase = require("../utils/uploadImageToSupabase");
 // POST /api/menu-items
 const createMenuItem = async (req, res) => {
   try {
-    const { userId, title, description, price, category, image } = req.body;
-    const user = await User.findById(userId).populate("restaurant");
+    const { userid, title, description, price, category } = req.body;
+    const user = await User.findById(userid).populate("restaurant");
     if (!user) return res.status(404).json({ message: "User not found" });
 
     const restaurant = user.restaurant;
@@ -17,12 +17,12 @@ const createMenuItem = async (req, res) => {
         .json({ message: "No restaurant found for this user" });
 
     let imageUrl = null;
-    console.log("req.file:", req.file); // Log the uploaded file
     if (req.file) {
       imageUrl = await uploadImageToSupabase(
         req.file.buffer,
         req.file.originalname
       );
+      console.log(imageUrl);
     }
     const menuItem = new MenuItem({
       title,
@@ -31,7 +31,7 @@ const createMenuItem = async (req, res) => {
       category,
       image: imageUrl,
       restaurant: restaurant._id,
-      owner: userId,
+      owner: userid,
     });
 
     await menuItem.save();

@@ -5,7 +5,7 @@ const { v4: uuidv4 } = require("uuid"); // For generating unique file names
 const uploadImageToSupabase = async (
   fileBuffer,
   fileName,
-  bucketName = "PlateFull"
+  bucketName = "Images"
 ) => {
   try {
     // Generate a unique file name using UUID
@@ -15,6 +15,7 @@ const uploadImageToSupabase = async (
     const { data, error } = await supabase.storage
       .from(bucketName)
       .upload(uniqueFileName, fileBuffer);
+    console.log("Upload Response Data:", data);
 
     if (error) {
       throw error;
@@ -24,6 +25,7 @@ const uploadImageToSupabase = async (
     const { publicUrl } = supabase.storage
       .from(bucketName)
       .getPublicUrl(data.path);
+    console.log("Generated Public URL:", publicUrl);
 
     return publicUrl;
   } catch (err) {
