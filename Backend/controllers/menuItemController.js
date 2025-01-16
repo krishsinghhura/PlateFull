@@ -22,7 +22,6 @@ const createMenuItem = async (req, res) => {
         req.file.buffer,
         req.file.originalname
       );
-      console.log(imageUrl);
     }
     const menuItem = new MenuItem({
       title,
@@ -99,9 +98,29 @@ const deletMenu = async (req, res) => {
   }
 };
 
+const getMenuItemsByOwner = async (req, res) => {
+  try {
+    const { ownerId } = req.params; // Extract ownerId from URL parameters
+
+    // Fetch all menu items where the owner matches the provided ID
+    const menuItems = await MenuItem.find({ owner: ownerId }).populate("owner");
+
+    if (menuItems.length === 0) {
+      return res
+        .status(404)
+        .json({ message: "No menu items found for this owner." });
+    }
+
+    res.status(200).json(menuItems);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+};
+
 module.exports = {
   createMenuItem,
   getRestaurantMenuItems,
   editMenu,
   deletMenu,
+  getMenuItemsByOwner,
 };

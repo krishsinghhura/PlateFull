@@ -25,14 +25,8 @@ const Navbar = () => {
 
         {/* Navbar links */}
         <div className="hidden md:flex space-x-8">
-          <Link
-            to="/profile"
-            className="text-white text-lg hover:text-indigo-200"
-          >
-            Profile
-          </Link>
           <Link to="/menu" className="text-white text-lg hover:text-indigo-200">
-            Menu
+            Your Menu
           </Link>
           <button
             onClick={handleLogout}

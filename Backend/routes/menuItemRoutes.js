@@ -6,6 +6,7 @@ const {
   getRestaurantMenuItems,
   editMenu,
   deletMenu,
+  getMenuItemsByOwner,
 } = require("../controllers/menuItemController");
 const authorize = require("../middleware/middleware");
 
@@ -16,6 +17,8 @@ router.get(
   authorize,
   getRestaurantMenuItems
 );
+
+router.get("/menu/:ownerId", getMenuItemsByOwner);
 
 router.put("/menu-items/:id", authorize, editMenu);
 

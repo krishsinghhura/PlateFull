@@ -32,7 +32,7 @@ const MenuItemsList = () => {
         );
         setMenuItems(response.data.menuItems); // Extract menuItems from the response and update state
       } catch (e) {
-        setError("Failed to fetch user data.");
+        setError("Check your network and please try again.");
         console.error(e);
       }
     };

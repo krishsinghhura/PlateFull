@@ -2,144 +2,80 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 
 const App = () => {
-  const [data, setData] = useState(null);
+  const [menuItems, setMenuItems] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
+  // Fetch data using Axios
   useEffect(() => {
-    const fetchData = async () => {
+    const fetchMenuItems = async () => {
       try {
         const response = await axios.get(
-          "http://localhost:5000/api/v2/users/677eb2f2eb2c500337d9a472"
+          "http://localhost:5000/api/v2/menu/677eb2f2eb2c500337d9a472"
         );
-        setData(response.data);
+        setMenuItems(response.data);
         setLoading(false);
       } catch (err) {
-        setError(err);
+        setError(err.message);
         setLoading(false);
       }
     };
 
-    fetchData();
+    fetchMenuItems();
   }, []);
 
   if (loading) {
-    return <p style={styles.loading}>Loading...</p>;
+    return (
+      <div className="flex justify-center items-center h-screen bg-gray-100">
+        <p className="text-2xl text-gray-600">Loading...</p>
+      </div>
+    );
   }
 
   if (error) {
-    return <p style={styles.error}>Error: {error.message}</p>;
+    return (
+      <div className="flex justify-center items-center h-screen bg-red-100">
+        <p className="text-2xl text-red-600">Error: {error}</p>
+      </div>
+    );
   }
 
   return (
-    <div style={styles.container}>
-      {/* Header */}
-      <header style={styles.header}>
-        <h1 style={styles.title}>{data?.restaurant?.name || "Restaurant"}</h1>
-        <p style={styles.subtitle}>
-          {data?.restaurant?.contact || "Contact Information"}
+    <div className="min-h-screen bg-gray-100 p-6">
+      <header className="bg-gray-800 text-white p-6 rounded-md shadow-md">
+        <h1 className="text-3xl font-bold">Restaurant Menu</h1>
+        <p className="text-sm text-gray-300">
+          Owner ID: 677eb2f2eb2c500337d9a472
         </p>
-        <p style={styles.subtitle}>{data?.restaurant?.address || "Address"}</p>
       </header>
 
-      {/* Menu Section */}
-      <main style={styles.main}>
-        <h2 style={styles.sectionTitle}>Menu</h2>
-        <div style={styles.menuGrid}>
-          {data?.menuItems?.map((item, index) => (
-            <div key={index} style={styles.menuItem}>
-              <h3 style={styles.itemTitle}>{item.title}</h3>
-              <p style={styles.itemDescription}>{item.description}</p>
-              <p style={styles.itemCategory}>{item.category}</p>
-              <p style={styles.itemPrice}>₹{item.price}</p>
+      <main className="mt-8">
+        <h2 className="text-2xl font-semibold text-gray-700 mb-4">
+          Menu Items
+        </h2>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          {menuItems.map((item) => (
+            <div
+              key={item._id}
+              className="bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow"
+            >
+              <h3 className="text-lg font-bold text-gray-800">{item.title}</h3>
+              <p className="text-sm text-gray-600">{item.description}</p>
+              <p className="italic text-gray-500 mt-2">{item.category}</p>
+              <p className="text-lg font-semibold text-gray-700 mt-4">
+                ₹{item.price}
+              </p>
+              {item.isAvailable ? (
+                <p className="text-green-500 font-medium mt-2">Available</p>
+              ) : (
+                <p className="text-red-500 font-medium mt-2">Out of Stock</p>
+              )}
             </div>
           ))}
         </div>
       </main>
     </div>
   );
-};
-
-// Inline styles
-const styles = {
-  container: {
-    minHeight: "100vh",
-    backgroundColor: "#f5f5dc", // Beige
-    color: "#4d0000", // Dark Maroon
-    fontFamily: "'Orbitron', sans-serif",
-  },
-  header: {
-    backgroundColor: "#660000", // Deep Maroon
-    padding: "20px",
-    textAlign: "center",
-    color: "#d4af37", // Gold
-  },
-  title: {
-    fontSize: "2.5rem",
-    fontWeight: "bold",
-  },
-  subtitle: {
-    fontSize: "1rem",
-    color: "#f5f5dc", // Beige
-    margin: "5px 0",
-  },
-  main: {
-    padding: "20px",
-  },
-  sectionTitle: {
-    fontSize: "2rem",
-    color: "#800000", // Rich Maroon
-    marginBottom: "20px",
-    fontWeight: "bold",
-  },
-  menuGrid: {
-    display: "grid",
-    gridTemplateColumns: "repeat(auto-fit, minmax(250px, 1fr))",
-    gap: "20px",
-  },
-  menuItem: {
-    backgroundColor: "#f5eaea", // Light Maroon
-    padding: "20px",
-    borderRadius: "10px",
-    boxShadow: "0 4px 8px rgba(0, 0, 0, 0.2)",
-    textAlign: "center",
-    transition: "transform 0.3s, box-shadow 0.3s",
-    cursor: "pointer",
-  },
-  itemTitle: {
-    fontSize: "1.2rem",
-    fontWeight: "bold",
-    color: "#660000", // Deep Maroon
-  },
-  itemDescription: {
-    fontSize: "0.9rem",
-    color: "#4d0000", // Dark Maroon
-    margin: "10px 0",
-  },
-  itemCategory: {
-    fontStyle: "italic",
-    color: "#800000", // Rich Maroon
-  },
-  itemPrice: {
-    fontSize: "1.1rem",
-    fontWeight: "bold",
-    color: "#d4af37", // Gold
-    marginTop: "10px",
-  },
-  loading: {
-    textAlign: "center",
-    color: "#660000", // Deep Maroon
-    fontSize: "1.5rem",
-    fontWeight: "bold",
-    marginTop: "20px",
-  },
-  error: {
-    textAlign: "center",
-    color: "#ff0000", // Red for errors
-    fontSize: "1.5rem",
-    fontWeight: "bold",
-    marginTop: "20px",
-  },
 };
 
 export default App;

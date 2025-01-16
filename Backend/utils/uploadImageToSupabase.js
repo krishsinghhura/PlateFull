@@ -1,36 +1,59 @@
-const supabase = require("../config/supabase"); // Import Supabase client
-const { v4: uuidv4 } = require("uuid"); // For generating unique file names
+const supabase = require("../config/supabase");
+const { v4: uuidv4 } = require("uuid");
 
-// Upload image to Supabase storage
 const uploadImageToSupabase = async (
   fileBuffer,
   fileName,
   bucketName = "Images"
 ) => {
   try {
-    // Generate a unique file name using UUID
-    const uniqueFileName = `${uuidv4()}-${fileName}`;
-
-    // Upload the file to the specified bucket
-    const { data, error } = await supabase.storage
-      .from(bucketName)
-      .upload(uniqueFileName, fileBuffer);
-    console.log("Upload Response Data:", data);
-
-    if (error) {
-      throw error;
+    // Input validation
+    if (!fileBuffer || !fileName) {
+      throw new Error("File buffer and file name are required");
     }
 
-    // Get the public URL of the uploaded file
-    const { publicUrl } = supabase.storage
-      .from(bucketName)
-      .getPublicUrl(data.path);
-    console.log("Generated Public URL:", publicUrl);
+    // Sanitize the filename and enforce image extension
+    const cleanFileName = fileName.replace(/[^a-zA-Z0-9.-]/g, "");
+    const fileExt = cleanFileName.split(".").pop().toLowerCase();
 
+    // Validate file type
+    const allowedExtensions = ["jpg", "jpeg", "png", "gif", "webp"];
+    if (!allowedExtensions.includes(fileExt)) {
+      throw new Error("Invalid file type. Only images are allowed.");
+    }
+
+    // Generate a unique file name using UUID
+    const uniqueFileName = `${uuidv4()}-${cleanFileName}`;
+
+    // Upload the file
+    const { data, error: uploadError } = await supabase.storage
+      .from(bucketName)
+      .upload(uniqueFileName, fileBuffer, {
+        contentType: `image/${fileExt}`, // Set correct content type
+        upsert: false, // Prevent overwriting existing files
+      });
+
+    if (uploadError) {
+      console.error("Upload error:", uploadError);
+      throw new Error(`Upload failed: ${uploadError.message}`);
+    }
+
+    if (!data || !data.path) {
+      throw new Error("Upload succeeded but no path returned");
+    }
+
+    // Get the public URL - note the lowercase 'publicUrl'
+    const {
+      data: { publicUrl },
+    } = supabase.storage.from(bucketName).getPublicUrl(data.path);
+
+    if (!publicUrl) {
+      throw new Error("Failed to generate public URL");
+    }
     return publicUrl;
   } catch (err) {
-    console.error("Error uploading image:", err.message);
-    throw new Error("Image upload failed");
+    console.error("Error uploading image:", err);
+    throw new Error(err.message || "Image upload failed");
   }
 };
 
