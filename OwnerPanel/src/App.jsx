@@ -32,7 +32,7 @@ function App() {
       <Routes>
         {/* Pass userId directly to CustomerPanel */}
         <Route path={`/menu/:ownerId`} element={<CustomerPanel />} />
-        <Route path="/login" element={<LoginPage />} />
+        <Route path="/" element={<LoginPage />} />
         <Route path="/dashboard" element={<DashBoard />} />
         <Route path="/create-restaurant" element={<CreateRestaurant />} />
         <Route path="/create-menuitem" element={<CreateMenu />} />

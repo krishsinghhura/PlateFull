@@ -34,6 +34,10 @@ const Dashboard = () => {
     navigate(`/menu/${userId}`);
   };
 
+  const prop = `/menu/${userId}`;
+  const handleShowQrCode = () => {
+    navigate(`/qr/${userId}`);
+  };
   return (
     <>
       <Navbar />

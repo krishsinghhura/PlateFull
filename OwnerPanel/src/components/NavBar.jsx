@@ -25,9 +25,6 @@ const Navbar = () => {
 
         {/* Navbar links */}
         <div className="hidden md:flex space-x-8">
-          <Link to="/menu" className="text-white text-lg hover:text-indigo-200">
-            Your Menu
-          </Link>
           <button
             onClick={handleLogout}
             className="text-white text-lg hover:text-indigo-200"
