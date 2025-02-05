@@ -2,7 +2,6 @@ import { useState, useEffect } from "react";
 import { Routes, Route, Navigate } from "react-router-dom";
 import { jwtDecode } from "jwt-decode";
 import Cookies from "js-cookie";
-import "./App.css";
 
 import LoginPage from "./pages/login";
 import DashBoard from "./pages/Dashboard";

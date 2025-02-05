@@ -20,7 +20,7 @@ const Navbar = () => {
       <div className="max-w-screen-xl mx-auto flex justify-between items-center">
         {/* Logo */}
         <div className="text-white font-bold text-xl">
-          <Link to="/">MyLogo</Link>
+          <Link to="/">PlateFull</Link>
         </div>
 
         {/* Navbar links */}
