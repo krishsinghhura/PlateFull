@@ -1,0 +1,36 @@
+services:
+  backend:
+    build: ./Backend
+    ports:
+      - "5000:5000"
+    networks:
+      - PlateFull
+    environment:
+      MONGO_URI: mongodb+srv://krishsinghhura:Krishhura1@cluster0.4tpqd.mongodb.net/
+      SUPABASE_KEY: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNudXVwaGxrbmx5ZHVzbnJramp6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzYwODA5NzYsImV4cCI6MjA1MTY1Njk3Nn0.6UAYN4dAxLgyY1QR2eqBStN8fThfufjDEx83PIBhNV0
+    depends_on:
+      - mongodb
+
+  frontend:
+    build: ./OwnerPanel
+    ports:
+      - "5173:5173"
+    networks:
+      - PlateFull
+
+  mongodb:
+    image: mongo:latest
+    ports:
+      - "27017:27017"
+    networks:
+      - PlateFull
+    volumes:
+      - mongo-data:/data/db
+
+networks:
+  PlateFull:
+    driver: bridge
+
+volumes:
+  mongo-data:
+    driver: local
